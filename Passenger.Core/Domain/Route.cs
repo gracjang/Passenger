@@ -8,7 +8,7 @@ namespace Passenger.Core.Domain
         public Node StartNode { get; protected set; }
         public Node EndNode { get; protected set; }
         public double Distance { get; protected set; }
-        public DateTime CreatedAt { get; protected set; }
+        public DateTime UpdatedAt { get; protected set; }
 
         protected Route(string name, Node startNode, Node endNode, double distance)
         {
@@ -16,7 +16,6 @@ namespace Passenger.Core.Domain
             StartNode = startNode;
             EndNode = endNode;
             Distance = distance;
-            CreatedAt = DateTime.UtcNow;
         }
 
         protected Route()

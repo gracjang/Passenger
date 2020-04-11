@@ -9,7 +9,6 @@ namespace Passenger.Core.Domain
         public Vehicle Vehicle { get; protected set; }
         public IEnumerable<Route> Routes { get; protected set; }
         public IEnumerable<DailyRoute> DailyRoutes { get; protected set; }
-        public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
 
     }

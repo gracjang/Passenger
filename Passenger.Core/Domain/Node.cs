@@ -9,7 +9,6 @@ namespace Passenger.Core.Domain
         public string Address { get; protected set; }
         public double Longitude {get; protected set; }
         public double Latitude { get; protected set; }
-        public DateTime CreatedAt { get; protected set; }
         public DateTime UpdatedAt { get; protected set; }
 
         protected Node()

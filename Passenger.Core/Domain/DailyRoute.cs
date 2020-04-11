@@ -8,7 +8,5 @@ namespace Passenger.Core.Domain
         public Guid Id { get; protected set; }
         public Route Route {get; protected set; }
         public IEnumerable<PassengerNode> PassengerNodes {get; protected set; }
-        public DateTime CreatedAt { get; protected set; }
-        public DateTime UpdatedAt { get; protected set; }
     }
 }

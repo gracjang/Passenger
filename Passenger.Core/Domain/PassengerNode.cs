@@ -6,7 +6,6 @@ namespace Passenger.Core.Domain
     {
         public Node Node {get; protected set; }
         public Passenger Passenger {get; protected set; } 
-        public DateTime CreatedAt { get; protected set; }
 
         protected PassengerNode()
         {
@@ -16,7 +15,6 @@ namespace Passenger.Core.Domain
         {
             Node = node;
             Passenger = passenger;
-            CreatedAt = DateTime.UtcNow;
         }
 
         public static PassengerNode Create(Node node, Passenger passenger)
