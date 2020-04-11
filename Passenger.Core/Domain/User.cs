@@ -12,32 +12,28 @@ namespace Passenger.Core.Domain
             RegexOptions.CultureInvariant);
 
         public Guid Id { get; protected set; }
-
         public string Email { get; protected set; }
-
         public string Username { get; protected set; }
-
         public string Password { get; protected set; }
-
         public string Salt { get; protected set; }
-
         public DateTime CreatedAt { get; protected set; }
-
         public DateTime UpdatedAt { get; protected set; }
 
         protected User()
         {  
         }
 
-        public User(string email, string username, string password, string salt)
+        protected User(string email, string username, string password, string salt)
         {   
             Id = Guid.NewGuid();
-            Email = email;
-            Username = username.ToLowerInvariant();
-            Password = password;
-            Salt = salt;
+            SetEmail(email);
+            SetUsername(username);
+            SetPassword(password, salt);
             CreatedAt = DateTime.UtcNow;
         }
+
+        public static User Create(string email, string username, string password, string salt)
+            => new User(email, username, password, salt);
 
         public void SetUsername(string username)
         {
@@ -50,7 +46,7 @@ namespace Passenger.Core.Domain
                 return;
             }
 
-            Username = username;
+            Username = username.ToLowerInvariant();
             UpdatedAt = DateTime.UtcNow;
         }
 
@@ -69,7 +65,7 @@ namespace Passenger.Core.Domain
                 return;
             }
 
-            Email = email;
+            Email = email.ToLowerInvariant();
             UpdatedAt = DateTime.UtcNow;
         }
 
