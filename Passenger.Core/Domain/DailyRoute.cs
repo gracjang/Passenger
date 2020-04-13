@@ -40,7 +40,7 @@ namespace Passenger.Core.Domain
             var passengerNode = GetPassengerNode(passenger);
             if(passengerNode != null)
             {
-                throw new InvalidOperationException($"Node already exists for passenger: {passenger.UserId}.")
+                throw new InvalidOperationException($"Node already exists for passenger: {passenger.UserId}.");
             }
 
             _passengerNodes.Add(PassengerNode.Create(node, passenger));
@@ -58,6 +58,6 @@ namespace Passenger.Core.Domain
         }
 
         private PassengerNode GetPassengerNode(Passenger passenger)
-            => _passengerNodes.SingleOrDefault(x => x.Passenger.UserId == passenger.UserId);
+            => PassengerNodes.SingleOrDefault(x => x.Passenger.UserId == passenger.UserId);
     }
 }
