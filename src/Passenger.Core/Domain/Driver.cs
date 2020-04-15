@@ -21,10 +21,11 @@ namespace Passenger.Core.Domain
         {   
         }
 
-        public Driver(User user)
+        public Driver(User user, Vehicle vehicle)
         {
             UserId = user.Id;
             Name = user.Username;
+            SetVehicle(vehicle);
         }
 
         public void SetVehicle(Vehicle vehicle)
