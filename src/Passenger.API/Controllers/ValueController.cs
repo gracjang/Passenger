@@ -1,20 +1,31 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Passenger.Core.Domain;
+using Passenger.Core.Repositories;
 
 namespace Passenger.API.Controllers
 {
-    [Route("api/[controller]")]
-    public class ValueController : Controller
+  [Route("api/[controller]")]
+  public class ValueController : Controller
+  {
+    private readonly IUserRepository _userRepository;
+
+    public ValueController(IUserRepository userRepository)
     {
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new List<string>(){
-                "value1",
-                "value2",
-                "value3",
-                "value4"
-            };
-        }
+      _userRepository = userRepository;
     }
+
+    [HttpGet]
+    public async Task<IEnumerable<User>> Get()
+    {
+      for (int i = 0; i < 10; i++)
+      {
+        await _userRepository.AddAsync(Core.Domain.User.Create("test@gmail.com", $"testowy{i}", "password", "Salt"));
+      }
+
+      var response = _userRepository.GetAllAsync().Result;
+      return response;
+    }
+  }
 }
