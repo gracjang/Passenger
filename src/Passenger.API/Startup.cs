@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Passenger.Infrastructure.IoC;
 using Passenger.Infrastructure.Mongo;
 
@@ -36,10 +35,6 @@ namespace Passenger.API
         {
           options.JsonSerializerOptions.WriteIndented = true;
         });
-
-      services.Configure<MongoSettings>(Configuration.GetSection("mongo"));
-      services.AddSingleton<IMongoSettings>(serviceProvider =>
-        serviceProvider.GetRequiredService<IOptions<MongoSettings>>().Value);
     }
 
     public void ConfigureContainer(ContainerBuilder builder)

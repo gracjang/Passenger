@@ -7,6 +7,7 @@ namespace Passenger.Infrastructure.IoC.Modules
   public class SettingsModule : Module
   {
     private readonly IConfiguration _configuration;
+    private const string MongoDatabaseKey = "MongoDatabase";
 
     public SettingsModule(IConfiguration configuration)
     {
@@ -15,7 +16,7 @@ namespace Passenger.Infrastructure.IoC.Modules
 
     protected override void Load(ContainerBuilder builder)
     {
-      builder.RegisterInstance(_configuration.GetSection("MongoDatabase").Get<MongoSettings>())
+      builder.RegisterInstance(_configuration.GetSection(MongoDatabaseKey).Get<MongoSettings>())
         .As<IMongoSettings>()
         .SingleInstance();
     }
