@@ -26,8 +26,9 @@ namespace Passenger.Infrastructure.Repositories
     public async Task<IEnumerable<User>> GetAllAsync()
       => await Users.AsQueryable().ToListAsync();
 
-    public async Task<User> GetByEmailAsync(string email)
+    public async Task<User> GetByEmailAsync(string email) 
       => await Users.AsQueryable().FirstOrDefaultAsync(x => x.Email == email);
+   
 
     public async Task<User> GetByIdAsync(Guid id)
       => await Users.AsQueryable().FirstOrDefaultAsync(x => x.Id == id);

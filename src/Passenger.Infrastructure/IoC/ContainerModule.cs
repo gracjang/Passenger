@@ -17,6 +17,8 @@ namespace Passenger.Infrastructure.IoC
     {
       builder.RegisterModule(new SettingsModule(_configuration));
       builder.RegisterModule<RepositoryModule>();
+      builder.RegisterModule<ConverterModule>();
+      builder.RegisterModule<ServiceModule>();
     }
   }
 }
