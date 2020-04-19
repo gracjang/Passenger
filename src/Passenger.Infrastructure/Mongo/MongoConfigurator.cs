@@ -15,13 +15,13 @@ namespace Passenger.Infrastructure.Mongo
         return;
       }
 
-      _initialized = true;
+      RegisterConventions();
     }
 
     private static void RegisterConventions()
     {
       ConventionRegistry.Register("PassengerConventions", new MongoConvention(),x => true);
-
+      _initialized = true;
     }
 
     private class MongoConvention : IConventionPack

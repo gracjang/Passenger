@@ -12,32 +12,32 @@ namespace Passenger.Infrastructure.Repositories
 {
   public class UserRepository : IUserRepository
   {
-    private readonly IMongoCollection<User> _users;
-    public UserRepository(IMongoSettings mongoSettings)
-    {
-      var client = new MongoClient(mongoSettings.ConnectionString);
-      var database = client.GetDatabase(mongoSettings.Database);
+    private const string UserCollectionName = "Users";
+    private readonly IMongoDatabase _database;
 
-      _users = database.GetCollection<User>(mongoSettings.CollectionName);
+    public UserRepository(IMongoDatabase database)
+    {
+      _database = database;
     }
 
     public async Task AddAsync(User user)
-      => await _users.InsertOneAsync(user);
-
+      => await Users.InsertOneAsync(user);
 
     public async Task<IEnumerable<User>> GetAllAsync()
-      => await _users.AsQueryable().ToListAsync();
+      => await Users.AsQueryable().ToListAsync();
 
     public async Task<User> GetByEmailAsync(string email)
-      => await _users.AsQueryable().FirstOrDefaultAsync(x => x.Email == email);
+      => await Users.AsQueryable().FirstOrDefaultAsync(x => x.Email == email);
 
     public async Task<User> GetByIdAsync(Guid id)
-      => await _users.AsQueryable().FirstOrDefaultAsync(x => x.Id == id);
+      => await Users.AsQueryable().FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task RemoveAsync(Guid id)
-      => await _users.DeleteOneAsync(x => x.Id == id);
+      => await Users.DeleteOneAsync(x => x.Id == id);
 
     public async Task UpdateAsync(User user)
-      => await _users.ReplaceOneAsync(x => x.Id == user.Id, user);
+      => await Users.ReplaceOneAsync(x => x.Id == user.Id, user);
+
+    private IMongoCollection<User> Users => _database.GetCollection<User>(UserCollectionName);
   }
 }
