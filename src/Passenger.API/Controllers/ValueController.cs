@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Passenger.Core.Domain;
 using Passenger.Core.Repositories;
 
 namespace Passenger.API.Controllers
@@ -16,7 +17,7 @@ namespace Passenger.API.Controllers
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IEnumerable<User>> Get()
     {
       for (int i = 0; i < 10; i++)
       {
@@ -24,7 +25,7 @@ namespace Passenger.API.Controllers
       }
 
       var response = _userRepository.GetAllAsync().Result;
-      return Json(response);
+      return response;
     }
   }
 }

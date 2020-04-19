@@ -3,50 +3,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Passenger.Core.Domain;
 using Passenger.Core.Repositories;
+using Passenger.Infrastructure.Mongo;
 
 namespace Passenger.Infrastructure.Repositories
 {
   public class UserRepository : IUserRepository
   {
-    private static readonly ISet<User> _users = new HashSet<User>();
-
-    public UserRepository()
+    private readonly IMongoCollection<User> _users;
+    public UserRepository(IMongoSettings mongoSettings)
     {
+      var client = new MongoClient(mongoSettings.ConnectionString);
+      var database = client.GetDatabase(mongoSettings.Database);
+
+      _users = database.GetCollection<User>(mongoSettings.CollectionName);
     }
 
     public async Task AddAsync(User user)
-    {
-      _users.Add(user);
-      await Task.CompletedTask;
-    }
+      => await _users.InsertOneAsync(user);
+
 
     public async Task<IEnumerable<User>> GetAllAsync()
-    {
-      return await Task.FromResult(_users);
-    }
+      => await _users.AsQueryable().ToListAsync();
 
     public async Task<User> GetByEmailAsync(string email)
-    {
-      return await Task.FromResult(_users.SingleOrDefault(x => x.Email == email));
-    }
+      => await _users.AsQueryable().FirstOrDefaultAsync(x => x.Email == email);
 
     public async Task<User> GetByIdAsync(Guid id)
-    {
-      return await Task.FromResult(_users.SingleOrDefault(x => x.Id == id));
-    }
+      => await _users.AsQueryable().FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task RemoveAsync(Guid id)
-    {
-      var user = await GetByIdAsync(id);
-      _users.Remove(user);
-      await Task.CompletedTask;
-    }
+      => await _users.DeleteOneAsync(x => x.Id == id);
 
     public async Task UpdateAsync(User user)
-    {
-      await Task.CompletedTask;
-    }
+      => await _users.ReplaceOneAsync(x => x.Id == user.Id, user);
   }
 }
