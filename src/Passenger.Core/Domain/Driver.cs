@@ -7,11 +7,27 @@ namespace Passenger.Core.Domain
   public class Driver
   {
     private ISet<Route> _routes = new HashSet<Route>();
+    private ISet<DailyRoute> _dailyRoutes = new HashSet<DailyRoute>();
 
     public Guid UserId { get; protected set; }
+
     public string Name { get; set; }
+
     public Vehicle Vehicle { get; protected set; }
+
     public DateTime UpdatedAt { get; protected set; }
+
+    public IEnumerable<Route> Routes
+    {
+      get => _routes;
+      set => _routes = new HashSet<Route>();
+    }
+
+    public IEnumerable<DailyRoute> DailyRoutes
+    {
+      get { return _dailyRoutes; }
+      set { _dailyRoutes = new HashSet<DailyRoute>(value); }
+    }
 
     protected Driver()
     {
@@ -22,12 +38,6 @@ namespace Passenger.Core.Domain
       UserId = user.Id;
       Name = user.Username;
       SetVehicle(vehicle);
-    }
-
-    public IEnumerable<Route> Routes
-    {
-      get => _routes;
-      set => _routes = new HashSet<Route>();
     }
 
     public void SetVehicle(Vehicle vehicle)
@@ -60,5 +70,6 @@ namespace Passenger.Core.Domain
     {
       return Routes.SingleOrDefault(x => x.Name == name);
     }
+
   }
 }
