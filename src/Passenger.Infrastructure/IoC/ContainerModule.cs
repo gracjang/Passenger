@@ -19,6 +19,7 @@ namespace Passenger.Infrastructure.IoC
       builder.RegisterModule<RepositoryModule>();
       builder.RegisterModule<ConverterModule>();
       builder.RegisterModule<ServiceModule>();
+      builder.RegisterModule<CommandModule>();
     }
   }
 }

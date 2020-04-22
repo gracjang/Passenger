@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Passenger.Core.Domain;
 using Passenger.Core.Repositories;
+using Passenger.Infrastructure.Commands;
+using Passenger.Infrastructure.Commands.User;
 using Passenger.Infrastructure.DTO;
 using Passenger.Infrastructure.Services.Interfaces;
 
@@ -12,10 +14,12 @@ namespace Passenger.API.Controllers
   public class UsersController : Controller
   {
     private readonly IUserService _userService;
+    private readonly ICommandDispatcher _commandDispatcher;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, ICommandDispatcher commandDispatcher)
     {
       _userService = userService;
+      _commandDispatcher = commandDispatcher;
     }
 
     [HttpGet("{email}")]
@@ -31,12 +35,11 @@ namespace Passenger.API.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] UserDto user)
+    public async Task<IActionResult> Post([FromBody] AddUserCommand command)
     {
-      await _userService.RegisterAsync(user.Email, user.Username, user.Password);
+      await _commandDispatcher.DispatchAsync(command);
 
-      return Created($"users/{user.Email}", null);
+      return Created($"api/users/{command.Email}", null);
     }
-
   }
 }
