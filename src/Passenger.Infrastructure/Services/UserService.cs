@@ -12,11 +12,13 @@ namespace Passenger.Infrastructure.Services
   {
     private readonly IUserRepository _userRepository;
     private readonly IUserDtoConverter _userDtoConverter;
+    private readonly IEncryptionService _encryptionService;
 
-    public UserService(IUserRepository userRepository, IUserDtoConverter userDtoConverter)
+    public UserService(IUserRepository userRepository, IUserDtoConverter userDtoConverter, IEncryptionService encryptionService)
     {
       _userRepository = userRepository;
       _userDtoConverter = userDtoConverter;
+      _encryptionService = encryptionService;
     }
 
     public async Task<UserDto> GetAsync(string email)
@@ -39,8 +41,10 @@ namespace Passenger.Infrastructure.Services
         throw new Exception($"User with email [{email}] already exists.");
       }
 
-      var salt = Guid.NewGuid().ToString("N");
-      user = User.Create(email, username, password, salt);
+      var salt = _encryptionService.GetSalt(password);
+      var hashPassword = _encryptionService.GetHashPassword(password, salt);
+      user = User.Create(email, username, hashPassword, salt);
+
       await _userRepository.AddAsync(user);
     }
   }
