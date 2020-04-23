@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Passenger.Core.Domain;
 using Passenger.Core.Repositories;
@@ -23,6 +24,7 @@ namespace Passenger.API.Controllers
     }
 
     [HttpGet("{email}")]
+    [Authorize]
     public async Task<IActionResult> Get(string email)
     {
       var user = await _userService.GetAsync(email);

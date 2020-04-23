@@ -47,5 +47,22 @@ namespace Passenger.Infrastructure.Services
 
       await _userRepository.AddAsync(user);
     }
+
+    public async Task LoginAsync(string email, string password)
+    {
+      var user = await _userRepository.GetByEmailAsync(email);
+
+      if (user == null)
+      {
+        throw new Exception($"User with email [{email}] doesn't exists");
+      }
+
+      var salt = _encryptionService.GetSalt(password);
+      var hash = _encryptionService.GetHashPassword(password, salt);
+      if(user.Password != hash)
+      {
+        throw new Exception("Invalid credentials");
+      }
+    }
   }
 }

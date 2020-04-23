@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Passenger.Infrastructure.Commands;
 using Passenger.Infrastructure.Commands.User;
+using Passenger.Infrastructure.Services.Interfaces;
 
 namespace Passenger.API.Controllers
 {
@@ -9,9 +10,21 @@ namespace Passenger.API.Controllers
   public class AccountController : Controller
   {
     private readonly ICommandDispatcher _commandDispatcher;
-    public AccountController(ICommandDispatcher commandDispatcher)
+    private readonly IJwtService _jwtService;
+
+    public AccountController(ICommandDispatcher commandDispatcher, IJwtService jwtService)
     {
       _commandDispatcher = commandDispatcher;
+      _jwtService = jwtService;
+    }
+
+    [HttpGet]
+    [Route("token")]
+    public IActionResult Get()
+    {
+      var token =_jwtService.CreateToken("test@22test.pl", "admin");
+
+      return Json(token);
     }
 
     [HttpPut]

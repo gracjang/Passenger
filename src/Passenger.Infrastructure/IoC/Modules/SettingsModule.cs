@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Passenger.Infrastructure.Extensions;
 using Passenger.Infrastructure.Mongo;
+using Passenger.Infrastructure.Settings;
 
 namespace Passenger.Infrastructure.IoC.Modules
 {
@@ -19,6 +20,9 @@ namespace Passenger.Infrastructure.IoC.Modules
     {
       builder.RegisterInstance(_configuration.GetSettings<MongoSettings>())
         .As<IMongoSettings>()
+        .SingleInstance();
+
+      builder.RegisterInstance(_configuration.GetSettings<JwtSettings>())
         .SingleInstance();
     }
   }
