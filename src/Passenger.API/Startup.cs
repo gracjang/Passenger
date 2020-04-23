@@ -1,11 +1,17 @@
+using System.Text;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Passenger.Infrastructure.Extensions;
 using Passenger.Infrastructure.IoC;
 using Passenger.Infrastructure.Mongo;
+using Passenger.Infrastructure.Settings;
 
 namespace Passenger.API
 {
@@ -29,11 +35,31 @@ namespace Passenger.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddAutoMapper(typeof(Startup));
       services.AddControllers();
       services.AddMvc()
         .AddJsonOptions(options =>
         {
           options.JsonSerializerOptions.WriteIndented = true;
+        });
+
+      var jwtSettings = Configuration.GetSettings<JwtSettings>();
+      services.AddAuthentication(x =>
+        {
+          x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+          x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(x =>
+        {
+          x.SaveToken = true;
+          x.RequireHttpsMetadata = false;
+          x.TokenValidationParameters = new TokenValidationParameters()
+          {
+            ValidIssuer = "http://localhost:5000",
+            ValidateAudience = false,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+            ValidateIssuerSigningKey = true,
+          };
         });
     }
 
@@ -57,6 +83,8 @@ namespace Passenger.API
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+      
     }
   }
 }
