@@ -37,6 +37,7 @@ namespace Passenger.API
     {
       services.AddAutoMapper(typeof(Startup));
       services.AddControllers();
+      services.AddMemoryCache();
       services.AddMvc()
         .AddJsonOptions(options =>
         {
@@ -51,16 +52,16 @@ namespace Passenger.API
         })
         .AddJwtBearer(x =>
         {
-          x.SaveToken = true;
-          x.RequireHttpsMetadata = false;
           x.TokenValidationParameters = new TokenValidationParameters()
           {
-            ValidIssuer = "http://localhost:5000",
+            ValidIssuer = jwtSettings.Issuer,
             ValidateAudience = false,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
             ValidateIssuerSigningKey = true,
           };
         });
+
+      services.AddAuthorization(x => x.AddPolicy("admin", x => x.RequireRole("admin")));
     }
 
     public void ConfigureContainer(ContainerBuilder builder)
@@ -80,11 +81,11 @@ namespace Passenger.API
 
       app.UseRouting();
 
+      app.UseAuthentication();
+
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
-      
     }
   }
 }

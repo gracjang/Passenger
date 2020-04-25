@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Passenger.Core.Domain;
 using Passenger.Core.Repositories;
 using Passenger.Infrastructure.Converters.Interfaces;
@@ -13,12 +14,17 @@ namespace Passenger.Infrastructure.Services
     private readonly IUserRepository _userRepository;
     private readonly IUserDtoConverter _userDtoConverter;
     private readonly IEncryptionService _encryptionService;
+    private readonly ILogger _logger;
 
-    public UserService(IUserRepository userRepository, IUserDtoConverter userDtoConverter, IEncryptionService encryptionService)
+    public UserService(IUserRepository userRepository, 
+      IUserDtoConverter userDtoConverter, 
+      IEncryptionService encryptionService,
+      ILogger<UserService> logger)
     {
       _userRepository = userRepository;
       _userDtoConverter = userDtoConverter;
       _encryptionService = encryptionService;
+      _logger = logger;
     }
 
     public async Task<UserDto> GetAsync(string email)
@@ -33,8 +39,10 @@ namespace Passenger.Infrastructure.Services
       return _userDtoConverter.Convert(user);
     }
 
-    public async Task RegisterAsync(string email, string username, string password)
+    public async Task RegisterAsync(string email, string username, string password, string role)
     {
+      _logger.LogDebug($"Starting register process");
+
       var user = await _userRepository.GetByEmailAsync(email);
       if(user != null)
       {
@@ -43,13 +51,17 @@ namespace Passenger.Infrastructure.Services
 
       var salt = _encryptionService.GetSalt(password);
       var hashPassword = _encryptionService.GetHashPassword(password, salt);
-      user = User.Create(email, username, hashPassword, salt);
+      user = User.Create(email, username, hashPassword, salt, role);
 
       await _userRepository.AddAsync(user);
+
+      _logger.LogDebug($"User registered successfully. ID [{user.Id}]");
     }
 
     public async Task LoginAsync(string email, string password)
     {
+      _logger.LogDebug($"Starting login process");
+
       var user = await _userRepository.GetByEmailAsync(email);
 
       if (user == null)
@@ -57,12 +69,13 @@ namespace Passenger.Infrastructure.Services
         throw new Exception($"User with email [{email}] doesn't exists");
       }
 
-      var salt = _encryptionService.GetSalt(password);
-      var hash = _encryptionService.GetHashPassword(password, salt);
+      var hash = _encryptionService.GetHashPassword(password, user.Salt);
       if(user.Password != hash)
       {
         throw new Exception("Invalid credentials");
       }
+
+      _logger.LogDebug($"User logged successfully. ID [{user.Id}]");
     }
   }
 }
