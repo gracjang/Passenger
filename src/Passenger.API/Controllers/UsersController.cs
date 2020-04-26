@@ -26,7 +26,7 @@ namespace Passenger.API.Controllers
     }
 
     [HttpGet("{email}")]
-    [Authorize(Policy = "admin")]
+    [Authorize]
     public async Task<IActionResult> Get(string email)
     {
       var user = await _userService.GetAsync(email);
@@ -44,7 +44,7 @@ namespace Passenger.API.Controllers
     {
       await _commandDispatcher.DispatchAsync(command);
 
-      return Created($"api/users/{command.Email}", null);
+      return Created($"api/users/{command.Email}", new object());
     }
 
     [HttpPost]

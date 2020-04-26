@@ -41,8 +41,6 @@ namespace Passenger.Infrastructure.Services
 
     public async Task RegisterAsync(string email, string username, string password, string role)
     {
-      _logger.LogDebug($"Starting register process");
-
       var user = await _userRepository.GetByEmailAsync(email);
       if(user != null)
       {
@@ -60,8 +58,6 @@ namespace Passenger.Infrastructure.Services
 
     public async Task LoginAsync(string email, string password)
     {
-      _logger.LogDebug($"Starting login process");
-
       var user = await _userRepository.GetByEmailAsync(email);
 
       if (user == null)

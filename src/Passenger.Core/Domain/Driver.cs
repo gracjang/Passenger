@@ -11,7 +11,7 @@ namespace Passenger.Core.Domain
 
     public Guid UserId { get; protected set; }
 
-    public string Name { get; set; }
+    public string Name { get; protected set; }
 
     public Vehicle Vehicle { get; protected set; }
 
@@ -33,15 +33,23 @@ namespace Passenger.Core.Domain
     {
     }
 
-    public Driver(User user, Vehicle vehicle)
+    public Driver(User user)
     {
       UserId = user.Id;
       Name = user.Username;
-      SetVehicle(vehicle);
     }
 
     public void SetVehicle(Vehicle vehicle)
     {
+      if(vehicle == null)
+      {
+        throw new InvalidOperationException($"Vehicle is null.");
+      }
+      if(Vehicle == vehicle)
+      {
+        return;
+      }
+
       Vehicle = vehicle;
       UpdatedAt = UpdatedAt;
     }
