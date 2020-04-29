@@ -1,21 +1,20 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Autofac;
-using Module = Autofac.Module;
 
 namespace Passenger.Infrastructure.IoC.Modules
 {
-  public class ConverterModule : Module
-  {
+    public class ProvidersModule : Autofac.Module
+    {
     protected override void Load(ContainerBuilder builder)
     {
-      var assembly = typeof(ConverterModule)
+      var assembly = typeof(ProvidersModule)
         .GetTypeInfo()
         .Assembly;
 
       builder.RegisterAssemblyTypes(assembly)
-        .Where(x => x.Name.EndsWith("Converter"))
+        .Where(x => x.Name.EndsWith("Provider"))
         .AsImplementedInterfaces()
         .InstancePerLifetimeScope();
     }
-  }
+    }
 }

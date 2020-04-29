@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,6 @@ namespace Passenger.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAllDrivers()
         {
             var user = await _driverService.GetAll();
@@ -35,6 +35,18 @@ namespace Passenger.API.Controllers
             return Json(user);
         }
 
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> Get(Guid userId)
+        {
+            var driver = await _driverService.GetById(userId);
+            if(driver == null)
+            {
+                return NotFound();
+            }
+
+            return Json(driver);
+        }
+        
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Post([FromBody] AddDriverCommand command)

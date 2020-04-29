@@ -24,9 +24,9 @@ namespace Passenger.Core.Domain
     {
     }
 
-    protected User(string email, string username, string password, string salt, string role)
+    protected User(Guid userId,string email, string username, string password, string salt, string role)
     {
-      Id = Guid.NewGuid();
+      Id = userId;
       SetEmail(email);
       SetUsername(username);
       SetPassword(password, salt);
@@ -34,8 +34,8 @@ namespace Passenger.Core.Domain
       CreatedAt = DateTime.UtcNow;
     }
 
-    public static User Create(string email, string username, string password, string salt, string role)
-      => new User(email, username, password, salt, role);
+    public static User Create(Guid userId, string email, string username, string password, string salt, string role)
+      => new User(userId, email, username, password, salt, role);
 
     public void SetUsername(string username)
     {

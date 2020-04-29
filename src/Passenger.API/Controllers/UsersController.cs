@@ -25,8 +25,19 @@ namespace Passenger.API.Controllers
       _cache = cache;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+      var user = await _userService.BrowseAsync();
+      if(user == null)
+      {
+        return NotFound();
+      }
+
+      return Json(user);
+    }
+
     [HttpGet("{email}")]
-    [Authorize]
     public async Task<IActionResult> Get(string email)
     {
       var user = await _userService.GetAsync(email);

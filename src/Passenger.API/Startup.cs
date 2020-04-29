@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Passenger.Infrastructure.AutoMapper;
 using Passenger.Infrastructure.Extensions;
 using Passenger.Infrastructure.IoC;
 using Passenger.Infrastructure.Mongo;
+using Passenger.Infrastructure.Services.Interfaces;
 using Passenger.Infrastructure.Settings;
 
 namespace Passenger.API
@@ -35,7 +37,7 @@ namespace Passenger.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddAutoMapper(typeof(Startup));
+      services.AddAutoMapper(typeof(AutoMapperConfiguration));
       services.AddControllers();
       services.AddMemoryCache();
       services.AddMvc()
@@ -76,6 +78,8 @@ namespace Passenger.API
       AutofacContainer = app.ApplicationServices.GetAutofacRoot();
 
       MongoConfigurator.Initialize();
+      var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
+      dataInitializer.SeedAsync();
       
       app.UseHttpsRedirection();
 
