@@ -29,6 +29,7 @@ namespace Passenger.Infrastructure.Services
             var start = Node.Create("StartAddress", startLongitude, startLatitude);
             var end = Node.Create("EndAddress", endLongitude, endLatitude);
             driver.AddRoute(name, start, end, distance);
+            await _driverRepository.UpdateAsync(driver);
         }
 
         public async Task DeleteAsync(Guid userId, string name)
