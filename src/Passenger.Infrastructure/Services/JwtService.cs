@@ -19,16 +19,17 @@ namespace Passenger.Infrastructure.Services
       _jwtSettings = jwtSettings;
     }
 
-    public JwtDto CreateToken(string email, string role)
+    public JwtDto CreateToken(Guid userId, string role)
     {
       var securityTokenHandler = new JwtSecurityTokenHandler();
       var now = DateTime.UtcNow;
       var claims = new Claim[]
       {
-        new Claim(JwtRegisteredClaimNames.Sub, email),
+        new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
         new Claim(ClaimTypes.Role, role),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         new Claim(JwtRegisteredClaimNames.Iat, EpochTime.GetIntDate(now).ToString(), ClaimValueTypes.Integer64),
+        new Claim(JwtRegisteredClaimNames.UniqueName, userId.ToString())
       };
 
       var expires = now.AddMinutes(_jwtSettings.ExpiredMinutes);

@@ -10,13 +10,12 @@ using Passenger.Infrastructure.Services.Interfaces;
 namespace Passenger.API.Controllers
 {
     [Route("api/[controller]")]
-    public class VehiclesController : Controller
+    public class VehiclesController : ApiControllerBase
     {
         private readonly IVehicleProvider _vehicleProvider;
-        private readonly ICommandDispatcher _commandDispatcher;
         public VehiclesController(ICommandDispatcher commandDispatcher, IVehicleProvider provider)
+            : base(commandDispatcher)
         {
-            _commandDispatcher = commandDispatcher;
             _vehicleProvider = provider;
         }
 

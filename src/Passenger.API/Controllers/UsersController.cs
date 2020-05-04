@@ -12,16 +12,15 @@ using Passenger.Infrastructure.Services.Interfaces;
 namespace Passenger.API.Controllers
 {
   [Route("api/[controller]")]
-  public class UsersController : Controller
+  public class UsersController : ApiControllerBase
   {
     private readonly IUserService _userService;
-    private readonly ICommandDispatcher _commandDispatcher;
     private readonly IMemoryCache _cache;
 
     public UsersController(IUserService userService, ICommandDispatcher commandDispatcher, IMemoryCache cache)
+      : base(commandDispatcher)
     {
       _userService = userService;
-      _commandDispatcher = commandDispatcher;
       _cache = cache;
     }
 
@@ -53,7 +52,7 @@ namespace Passenger.API.Controllers
     [Route("register")]
     public async Task<IActionResult> Post([FromBody] AddUserCommand command)
     {
-      await _commandDispatcher.DispatchAsync(command);
+      await DispatchAsync(command);
 
       return Created($"api/users/{command.Email}", new object());
     }
@@ -63,7 +62,7 @@ namespace Passenger.API.Controllers
     public async Task<IActionResult> Post([FromBody]LoginCommand command)
     {
       command.TokenId = Guid.NewGuid();
-      await _commandDispatcher.DispatchAsync(command);
+      await DispatchAsync(command);
 
       return Json(_cache.GetJwt(command.TokenId));
     }

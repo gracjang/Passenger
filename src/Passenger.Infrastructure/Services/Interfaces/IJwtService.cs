@@ -5,6 +5,6 @@ namespace Passenger.Infrastructure.Services.Interfaces
 {
   public interface IJwtService
   {
-    JwtDto CreateToken(string email, string role);
+    JwtDto CreateToken(Guid userId, string role);
   }
 }

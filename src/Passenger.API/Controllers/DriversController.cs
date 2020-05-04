@@ -10,16 +10,15 @@ using Passenger.Infrastructure.Services.Interfaces;
 namespace Passenger.API.Controllers
 {
     [Route("api/[controller]")]
-    public class DriversController : Controller
+    public class DriversController : ApiControllerBase
     {
         private readonly IDriverService _driverService;
-        private readonly ICommandDispatcher _commandDispatcher;
         private readonly IMemoryCache _cache;
 
         public DriversController(IMemoryCache cache, ICommandDispatcher commandDispatcher, IDriverService driverService)
+            : base(commandDispatcher)
         {
             _cache = cache;
-            _commandDispatcher = commandDispatcher;
             _driverService = driverService;
         }
 
@@ -51,7 +50,7 @@ namespace Passenger.API.Controllers
         [Authorize]
         public async Task<IActionResult> Post([FromBody] AddDriverCommand command)
         {
-            await _commandDispatcher.DispatchAsync(command);
+            await DispatchAsync(command);
 
             return Created($"api/drivers/{command.UserId}", new object());
         }
