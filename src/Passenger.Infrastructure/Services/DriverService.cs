@@ -48,6 +48,12 @@ namespace Passenger.Infrastructure.Services
             await _driverRepository.AddAsync(driver);
         }
 
+        public async Task DeleteAsync(Guid userId)
+        {
+            var driver = await _driverRepository.GetOrFailAsync(userId);
+            await _driverRepository.RemoveAsync(driver);
+        }
+
         public async Task<IEnumerable<DriverDto>> GetAll()
         {
             var drivers = await _driverRepository.GetAllAsync();
