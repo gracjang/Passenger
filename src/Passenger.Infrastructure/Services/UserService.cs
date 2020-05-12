@@ -33,7 +33,7 @@ namespace Passenger.Infrastructure.Services
         {
             var users = await _userRepository.GetAllAsync();
 
-            return _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
+            return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
         public async Task<UserDto> GetAsync(string email) 

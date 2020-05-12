@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Passenger.Core.Domain;
 using Passenger.Core.Repositories;
 using Passenger.Infrastructure.DTO;
+using Passenger.Infrastructure.Extensions;
 using Passenger.Infrastructure.Providers.Interfaces;
 using Passenger.Infrastructure.Services.Interfaces;
 
@@ -35,17 +36,14 @@ namespace Passenger.Infrastructure.Services
 
         public async Task CreateAsync(Guid userId) 
         {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if(user == null)
-            {
-                throw new Exception($"User with Id: [{userId}] not found.");
-            }
+            var user = await _userRepository.GetOrFailAsync(userId);
 
-            var driver = await _driverRepository.GetByIdAsync(userId);
+            var driver = await _driverRepository.GetOrFailAsync(userId);
             if(driver != null)
             {
                 throw new Exception($"Driver with Id: [{userId}] already exists.");
             }
+            
             driver = new Driver(user);
             await _driverRepository.AddAsync(driver);
         }
@@ -53,27 +51,19 @@ namespace Passenger.Infrastructure.Services
         public async Task<IEnumerable<DriverDto>> GetAll()
         {
             var drivers = await _driverRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<Driver>, IEnumerable<DriverDto>>(drivers);
+            return _mapper.Map<IEnumerable<DriverDto>>(drivers);
         }
 
         public async Task<DriverDetailsDto> GetById(Guid userId) 
         {
-            var driver = await _driverRepository.GetByIdAsync(userId);
-            if (driver == null)
-            {
-                throw new Exception($"Driver with Id [{userId}] doesn't exists.");
-            }
+            var driver = await _driverRepository.GetOrFailAsync(userId);
 
             return _mapper.Map<DriverDetailsDto>(driver);
         }
 
         public async Task SetVehicle(Guid userId, string brand, string name) 
         {
-            var driver = await _driverRepository.GetByIdAsync(userId);
-            if(driver == null)
-            {
-                throw new Exception($"Driver with userId: [{userId}] not found.");
-            }
+            var driver = await _driverRepository.GetOrFailAsync(userId);
 
             var vehicleDto = await _vehicleProvider.GetAsync(brand, name);
             var vehicle = Vehicle.Create(name, vehicleDto.Seats, brand);
