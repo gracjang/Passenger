@@ -55,11 +55,20 @@ namespace Passenger.API.Controllers
             return CreatedAtAction(nameof(Get), new { userId = command.UserId });
         }
 
-        [HttpDelete("/me")]
+        [HttpDelete("me")]
         [Authorize]
         public async Task<IActionResult> Delete()
         {
             await DispatchAsync(new RemoveDriverCommand());
+
+            return NoContent();
+        }
+
+        [HttpPut("me")]
+        [Authorize]
+        public async Task<IActionResult> Put([FromBody] UpdateDriverCommand command)
+        {
+            await DispatchAsync(command);
 
             return NoContent();
         }
