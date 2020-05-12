@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Passenger.Infrastructure.AutoMapper;
 using Passenger.Infrastructure.Extensions;
 using Passenger.Infrastructure.IoC;
 using Passenger.Infrastructure.Mongo;
+using Passenger.Infrastructure.Services.Interfaces;
 using Passenger.Infrastructure.Settings;
 
 namespace Passenger.API
@@ -35,8 +37,9 @@ namespace Passenger.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddAutoMapper(typeof(Startup));
+      services.AddAutoMapper(typeof(AutoMapperConfiguration));
       services.AddControllers();
+      services.AddMemoryCache();
       services.AddMvc()
         .AddJsonOptions(options =>
         {
@@ -51,16 +54,16 @@ namespace Passenger.API
         })
         .AddJwtBearer(x =>
         {
-          x.SaveToken = true;
-          x.RequireHttpsMetadata = false;
           x.TokenValidationParameters = new TokenValidationParameters()
           {
-            ValidIssuer = "http://localhost:5000",
+            ValidIssuer = jwtSettings.Issuer,
             ValidateAudience = false,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
             ValidateIssuerSigningKey = true,
           };
         });
+
+      services.AddAuthorization(x => x.AddPolicy("admin", x => x.RequireRole("admin")));
     }
 
     public void ConfigureContainer(ContainerBuilder builder)
@@ -75,16 +78,18 @@ namespace Passenger.API
       AutofacContainer = app.ApplicationServices.GetAutofacRoot();
 
       MongoConfigurator.Initialize();
+      var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
+      dataInitializer.SeedAsync();
       
       app.UseHttpsRedirection();
 
       app.UseRouting();
 
+      app.UseAuthentication();
+
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
-      
     }
   }
 }

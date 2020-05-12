@@ -19,7 +19,7 @@ namespace Passenger.Core.Domain
       SetBrand(brand);
     }
 
-    public static void Create(string name, int seats, string brand)
+    public static Vehicle Create(string name, int seats, string brand)
       => new Vehicle(name, seats, brand);
 
     private void SetName(string name)

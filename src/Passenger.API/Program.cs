@@ -1,7 +1,9 @@
 using System.IO;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Passenger.API
 {
@@ -11,6 +13,12 @@ namespace Passenger.API
     {
       var host = Host.CreateDefaultBuilder(args)
         .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+        .ConfigureLogging(logging =>
+        {
+          logging.ClearProviders();
+          logging.AddConsole();
+          logging.AddDebug();
+        })
         .ConfigureWebHostDefaults(webHostBuilder => {
           webHostBuilder
             .UseContentRoot(Directory.GetCurrentDirectory())
@@ -19,7 +27,12 @@ namespace Passenger.API
         })
         .Build();
 
+      var logger = host.Services.GetRequiredService<ILogger<Program>>();
+      logger.LogInformation($"Starting application...");
+
       host.Run();
+
+      
     }
   }
 }

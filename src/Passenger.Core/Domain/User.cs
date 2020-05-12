@@ -16,6 +16,7 @@ namespace Passenger.Core.Domain
     public string Username { get; protected set; }
     public string Password { get; protected set; }
     public string Salt { get; protected set; }
+    public string Role { get; protected set; }
     public DateTime CreatedAt { get; protected set; }
     public DateTime UpdatedAt { get; protected set; }
 
@@ -23,17 +24,18 @@ namespace Passenger.Core.Domain
     {
     }
 
-    protected User(string email, string username, string password, string salt)
+    protected User(Guid userId,string email, string username, string password, string salt, string role)
     {
-      Id = Guid.NewGuid();
+      Id = userId;
       SetEmail(email);
       SetUsername(username);
       SetPassword(password, salt);
+      SetRole(role);
       CreatedAt = DateTime.UtcNow;
     }
 
-    public static User Create(string email, string username, string password, string salt)
-      => new User(email, username, password, salt);
+    public static User Create(Guid userId, string email, string username, string password, string salt, string role)
+      => new User(userId, email, username, password, salt, role);
 
     public void SetUsername(string username)
     {
@@ -84,17 +86,6 @@ namespace Passenger.Core.Domain
         throw new DomainException(ErrorCodes.InvalidPassword, "Salt can't be empty.");
       }
 
-      if(password.Length < 6)
-      {
-        throw new DomainException(
-          ErrorCodes.InvalidPassword, "Password must contain at least 6 characters.");
-      }
-
-      if(password.Length > 30)
-      {
-        throw new DomainException(ErrorCodes.InvalidPassword, "Password can't contain more than 30 characters.");
-      }
-
       if(Password == password)
       {
         return;
@@ -102,6 +93,22 @@ namespace Passenger.Core.Domain
 
       Salt = salt;
       Password = password;
+      UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void SetRole(string role)
+    {
+      if(string.IsNullOrEmpty(role))
+      {
+        throw new DomainException(ErrorCodes.InvalidRole, "Role can't be null or empty");
+      }
+
+      if(role == Role)
+      {
+        return;
+      }
+
+      Role = role;
       UpdatedAt = DateTime.UtcNow;
     }
   }

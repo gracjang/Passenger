@@ -11,7 +11,7 @@ namespace Passenger.Core.Domain
 
     public Guid UserId { get; protected set; }
 
-    public string Name { get; set; }
+    public string Name { get; protected set; }
 
     public Vehicle Vehicle { get; protected set; }
 
@@ -20,7 +20,7 @@ namespace Passenger.Core.Domain
     public IEnumerable<Route> Routes
     {
       get => _routes;
-      set => _routes = new HashSet<Route>();
+      set => _routes = new HashSet<Route>(value);
     }
 
     public IEnumerable<DailyRoute> DailyRoutes
@@ -33,17 +33,16 @@ namespace Passenger.Core.Domain
     {
     }
 
-    public Driver(User user, Vehicle vehicle)
+    public Driver(User user)
     {
       UserId = user.Id;
       Name = user.Username;
-      SetVehicle(vehicle);
     }
 
     public void SetVehicle(Vehicle vehicle)
     {
       Vehicle = vehicle;
-      UpdatedAt = UpdatedAt;
+      UpdatedAt = DateTime.UtcNow;
     }
 
     public void AddRoute(string name, Node start, Node end, double distance)
@@ -53,17 +52,19 @@ namespace Passenger.Core.Domain
       if(route != null) throw new InvalidOperationException($"Route {name} already exists for Driver: {Name}.");
 
       _routes.Add(Route.Create(name, start, end, distance));
-      UpdatedAt = UpdatedAt;
+      UpdatedAt = DateTime.UtcNow;
     }
 
     public void DeleteRoute(string name)
     {
       var route = GetRoute(name);
 
-      if(route == null) return;
-
+      if(route == null) 
+      {
+        throw new Exception($"Route named: '{name}' for driver: '{Name}' was not found.");
+      }
       _routes.Remove(route);
-      UpdatedAt = UpdatedAt;
+      UpdatedAt = DateTime.UtcNow;
     }
 
     private Route GetRoute(string name)

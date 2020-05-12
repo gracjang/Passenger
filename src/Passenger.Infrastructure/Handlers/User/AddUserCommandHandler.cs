@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Passenger.Infrastructure.Commands;
 using Passenger.Infrastructure.Commands.User;
 using Passenger.Infrastructure.Services.Interfaces;
@@ -16,7 +17,8 @@ namespace Passenger.Infrastructure.Handlers.User
 
     public async Task HandleAsync(AddUserCommand command)
     {
-      await _userService.RegisterAsync(command.Email, command.Username, command.Password);
+      var userId = Guid.NewGuid();
+      await _userService.RegisterAsync(userId, command.Email, command.Username, command.Password, command.Role);
     }
   }
 }
