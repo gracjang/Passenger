@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Passenger.API.Framework;
 using Passenger.Infrastructure.AutoMapper;
 using Passenger.Infrastructure.Extensions;
 using Passenger.Infrastructure.IoC;
@@ -80,15 +81,11 @@ namespace Passenger.API
       MongoConfigurator.Initialize();
       var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
       dataInitializer.SeedAsync();
-      
+      app.UseException();
       app.UseHttpsRedirection();
-
       app.UseRouting();
-
       app.UseAuthentication();
-
-      app.UseAuthorization();
-
+      app.UseAuthorization();    
       app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
   }
