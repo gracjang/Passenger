@@ -1,9 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Passenger.Infrastructure.Commands;
 using Passenger.Infrastructure.Commands.User;
 using Passenger.Infrastructure.Extensions;
@@ -59,7 +57,7 @@ namespace Passenger.API.Controllers
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Post([FromBody]LoginCommand command)
+    public async Task<IActionResult> Post([FromBody] LoginCommand command)
     {
       command.TokenId = Guid.NewGuid();
       await DispatchAsync(command);

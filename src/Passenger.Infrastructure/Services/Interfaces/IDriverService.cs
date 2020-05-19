@@ -14,7 +14,7 @@ namespace Passenger.Infrastructure.Services.Interfaces
     Task CreateAsync(Guid userId);
 
     Task SetVehicle(Guid userId, string brand, string name);
-    
+
     Task DeleteAsync(Guid userId);
-    }
+  }
 }
