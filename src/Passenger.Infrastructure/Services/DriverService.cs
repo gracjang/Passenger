@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Passenger.Core.Domain;
 using Passenger.Core.Repositories;
 using Passenger.Infrastructure.DTO;
+using Passenger.Infrastructure.Exceptions;
 using Passenger.Infrastructure.Extensions;
 using Passenger.Infrastructure.Providers.Interfaces;
 using Passenger.Infrastructure.Services.Interfaces;
@@ -41,7 +42,7 @@ namespace Passenger.Infrastructure.Services
             var driver = await _driverRepository.GetOrFailAsync(userId);
             if(driver != null)
             {
-                throw new Exception($"Driver with Id: [{userId}] already exists.");
+                throw new ServiceException(ErrorCodes.DriverWithUserIdExists, $"Driver with Id: [{userId}] already exists.");
             }
             
             driver = new Driver(user);

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Passenger.Core.Domain;
 using Passenger.Core.Repositories;
 using Passenger.Infrastructure.DTO;
+using Passenger.Infrastructure.Exceptions;
 using Passenger.Infrastructure.Services.Interfaces;
 
 namespace Passenger.Infrastructure.Services 
@@ -42,7 +43,7 @@ namespace Passenger.Infrastructure.Services
 
             if (user == null) 
             {
-                throw new Exception($"User with email [{email}] doesn't exists");
+                throw new ServiceException(ErrorCodes.UserNotFound, $"User with email [{email}] doesn't exists");
             }
 
             return _mapper.Map<UserDto>(user);
@@ -53,7 +54,7 @@ namespace Passenger.Infrastructure.Services
             var user = await _userRepository.GetByEmailAsync(email);
             if (user != null) 
             {
-                throw new Exception($"User with email [{email}] already exists.");
+                throw new ServiceException(ErrorCodes.EmailInUse, $"User with email [{email}] already exists.");
             }
 
             var salt = _encryptionService.GetSalt(password);
@@ -71,13 +72,13 @@ namespace Passenger.Infrastructure.Services
 
             if (user == null) 
             {
-                throw new Exception($"User with email [{email}] doesn't exists");
+                throw new ServiceException(ErrorCodes.InvalidCredentials, "Invalid credentials");
             }
 
             var hash = _encryptionService.GetHashPassword(password, user.Salt);
             if (user.Password != hash) 
             {
-                throw new Exception("Invalid credentials");
+                throw new ServiceException(ErrorCodes.InvalidCredentials,"Invalid credentials");
             }
 
             _logger.LogDebug($"User logged successfully. ID [{user.Id}]");
