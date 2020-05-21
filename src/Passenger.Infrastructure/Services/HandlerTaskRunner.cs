@@ -7,13 +7,13 @@ namespace Passenger.Infrastructure.Services
 {
   public class HandlerTaskRunner : IHandlerTaskRunner
   {
-    private readonly IHandler _handler;
+    private readonly IHandlerService _handlerService;
     private readonly Func<Task> _validate;
     private readonly ISet<IHandlerTask> _handlerTasks;
 
-    public HandlerTaskRunner(IHandler handler, Func<Task> validate, ISet<IHandlerTask> handlerTasks)
+    public HandlerTaskRunner(IHandlerService handlerService, Func<Task> validate, ISet<IHandlerTask> handlerTasks)
     {
-      _handler = handler;
+      _handlerService = handlerService;
       _validate = validate;
       _handlerTasks = handlerTasks;
     }
@@ -21,7 +21,7 @@ namespace Passenger.Infrastructure.Services
     
     public IHandlerTask Run(Func<Task> run)
     {
-      var handlerTask = new HandlerTask(_handler, run);
+      var handlerTask = new HandlerTask(_handlerService, run);
       _handlerTasks.Add(handlerTask);
 
       return handlerTask;

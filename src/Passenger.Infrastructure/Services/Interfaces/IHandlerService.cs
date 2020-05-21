@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Passenger.Infrastructure.Services.Interfaces
 {
-  public interface IHandler
+  public interface IHandlerService
   {  
     IHandlerTask Run(Func<Task> run);
 

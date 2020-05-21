@@ -20,7 +20,7 @@ namespace Passenger.Infrastructure.Services.Interfaces
 
     IHandlerTask DoNotPropagateException();
 
-		IHandler Next();
+		IHandlerService Next();
 
     Task ExecuteAsync();
   }

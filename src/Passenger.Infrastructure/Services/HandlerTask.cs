@@ -7,7 +7,7 @@ namespace Passenger.Infrastructure.Services
 {
   public class HandlerTask : IHandlerTask
   {
-    private readonly IHandler _handler;
+    private readonly IHandlerService _handlerService;
     private readonly Func<Task> _run;
     private Func<Task> _validate;
     private Func<Task> _always;
@@ -17,9 +17,9 @@ namespace Passenger.Infrastructure.Services
     private bool _propagateException = true;
     private bool _executeOnError = true;
 
-    public HandlerTask(IHandler handler, Func<Task> run, Func<Task> validate = null)
+    public HandlerTask(IHandlerService handlerService, Func<Task> run, Func<Task> validate = null)
     {
-      _handler = handler;
+      _handlerService = handlerService;
       _run = run;
       _validate = validate;
     }
@@ -70,8 +70,8 @@ namespace Passenger.Infrastructure.Services
       return this;
     }
 
-    public IHandler Next()
-      => _handler;
+    public IHandlerService Next()
+      => _handlerService;
 
     public async Task ExecuteAsync()
     {

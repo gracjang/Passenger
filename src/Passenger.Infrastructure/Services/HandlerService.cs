@@ -5,7 +5,7 @@ using Passenger.Infrastructure.Services.Interfaces;
 
 namespace Passenger.Infrastructure.Services
 {
-  public class Handler : IHandler
+  public class HandlerService : IHandlerService
   {
     private readonly ISet<IHandlerTask> _handlerTasks = new HashSet<IHandlerTask>();
 
