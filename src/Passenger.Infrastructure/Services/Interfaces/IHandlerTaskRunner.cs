@@ -1,9 +1,10 @@
+﻿using System;
 using System.Threading.Tasks;
 
 namespace Passenger.Infrastructure.Services.Interfaces
 {
-  public interface IDataInitializer
+  public interface IHandlerTaskRunner
   {
-    Task SeedAsync();
+    IHandlerTask Run(Func<Task> run);
   }
 }

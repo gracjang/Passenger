@@ -8,8 +8,7 @@ namespace Passenger.Infrastructure.IoC.Modules
   {
     protected override void Load(ContainerBuilder builder)
     {
-      var assembly = typeof(ServiceModule).
-        GetTypeInfo()
+      var assembly = typeof(ServiceModule).GetTypeInfo()
         .Assembly;
 
       builder.RegisterAssemblyTypes(assembly)

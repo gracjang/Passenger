@@ -10,6 +10,7 @@ namespace Passenger.Infrastructure.Services
     private const int SaltLength = 64;
     private const int DeriveBytesIterationsCount = 10000;
     private const int BytesRequested = 32;
+
     public string GetSalt(string value)
     {
       if(string.IsNullOrEmpty(value))
@@ -26,15 +27,15 @@ namespace Passenger.Infrastructure.Services
 
     public string GetHashPassword(string value, string salt)
     {
-      if (string.IsNullOrEmpty(value) || string.IsNullOrEmpty(salt))
+      if(string.IsNullOrEmpty(value) || string.IsNullOrEmpty(salt))
       {
         throw new ArgumentNullException($"Error occured when getting hash password.");
       }
 
       var hashedPassword = Convert.ToBase64String(
         KeyDerivation.Pbkdf2(
-          value, 
-          GetSaltBytes(salt), 
+          value,
+          GetSaltBytes(salt),
           KeyDerivationPrf.HMACSHA512,
           DeriveBytesIterationsCount,
           BytesRequested));

@@ -2,7 +2,7 @@
 
 namespace Passenger.Infrastructure.DTO
 {
-    public class DriverDto
+  public class DriverDto
   {
     public Guid UserId { get; protected set; }
 

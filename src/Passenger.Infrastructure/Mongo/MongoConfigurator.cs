@@ -20,7 +20,7 @@ namespace Passenger.Infrastructure.Mongo
 
     private static void RegisterConventions()
     {
-      ConventionRegistry.Register("PassengerConventions", new MongoConvention(),x => true);
+      ConventionRegistry.Register("PassengerConventions", new MongoConvention(), x => true);
       _initialized = true;
     }
 

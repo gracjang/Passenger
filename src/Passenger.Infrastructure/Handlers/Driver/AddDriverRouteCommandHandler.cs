@@ -6,21 +6,21 @@ using Passenger.Infrastructure.Services.Interfaces;
 
 namespace Passenger.Infrastructure.Handlers.Driver
 {
-    public class AddDriverRouteCommandHandler : ICommandHandler<AddDriverRouteCommand>
+  public class AddDriverRouteCommandHandler : ICommandHandler<AddDriverRouteCommand>
+  {
+    private readonly IDriverRouteService _driverRouteService;
+
+    public AddDriverRouteCommandHandler(IDriverRouteService driverRouteService)
     {
-        private readonly IDriverRouteService _driverRouteService;
-
-        public AddDriverRouteCommandHandler(IDriverRouteService driverRouteService)
-        {
-            _driverRouteService = driverRouteService;
-        }
-
-        public async Task HandleAsync(AddDriverRouteCommand command)
-        {
-            await _driverRouteService.AddAsync(command.UserId, command.Name, 
-                command.StartLatitude, command.StartLongitude, 
-                command.EndLatitude, command.EndLongitude, 
-                command.Distance);
-        }
+      _driverRouteService = driverRouteService;
     }
+
+    public async Task HandleAsync(AddDriverRouteCommand command)
+    {
+      await _driverRouteService.AddAsync(command.UserId, command.Name,
+        command.StartLatitude, command.StartLongitude,
+        command.EndLatitude, command.EndLongitude,
+        command.Distance);
+    }
+  }
 }

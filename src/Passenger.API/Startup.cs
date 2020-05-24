@@ -42,10 +42,7 @@ namespace Passenger.API
       services.AddControllers();
       services.AddMemoryCache();
       services.AddMvc()
-        .AddJsonOptions(options =>
-        {
-          options.JsonSerializerOptions.WriteIndented = true;
-        });
+        .AddJsonOptions(options => { options.JsonSerializerOptions.WriteIndented = true; });
 
       var jwtSettings = Configuration.GetSettings<JwtSettings>();
       services.AddAuthentication(x =>
@@ -85,7 +82,7 @@ namespace Passenger.API
       app.UseHttpsRedirection();
       app.UseRouting();
       app.UseAuthentication();
-      app.UseAuthorization();    
+      app.UseAuthorization();
       app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
   }

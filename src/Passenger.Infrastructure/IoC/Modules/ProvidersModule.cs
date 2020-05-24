@@ -3,8 +3,8 @@ using Autofac;
 
 namespace Passenger.Infrastructure.IoC.Modules
 {
-    public class ProvidersModule : Autofac.Module
-    {
+  public class ProvidersModule : Autofac.Module
+  {
     protected override void Load(ContainerBuilder builder)
     {
       var assembly = typeof(ProvidersModule)
@@ -16,5 +16,5 @@ namespace Passenger.Infrastructure.IoC.Modules
         .AsImplementedInterfaces()
         .InstancePerLifetimeScope();
     }
-    }
+  }
 }
