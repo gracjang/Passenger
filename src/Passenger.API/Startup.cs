@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Passenger.API.Framework;
 using Passenger.Infrastructure.AutoMapper;
 using Passenger.Infrastructure.Extensions;
@@ -43,7 +44,15 @@ namespace Passenger.API
       services.AddMemoryCache();
       services.AddMvc()
         .AddJsonOptions(options => { options.JsonSerializerOptions.WriteIndented = true; });
-
+      services.AddSwaggerGen(c =>
+      {
+        c.SwaggerDoc("v1", new OpenApiInfo()
+        {
+          Title = "Passenger API",
+          Version = "v1",
+          Description = "Passenger",
+        });
+      });
       var jwtSettings = Configuration.GetSettings<JwtSettings>();
       services.AddAuthentication(x =>
         {
@@ -79,10 +88,11 @@ namespace Passenger.API
       var dataInitializer = app.ApplicationServices.GetService<IDataInitializer>();
       dataInitializer.SeedAsync();
       app.UseException();
-      app.UseHttpsRedirection();
       app.UseRouting();
       app.UseAuthentication();
       app.UseAuthorization();
+      app.UseSwagger();
+      app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Passenger API V1"); });
       app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
     }
   }

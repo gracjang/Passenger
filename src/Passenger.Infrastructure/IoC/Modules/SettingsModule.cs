@@ -9,7 +9,6 @@ namespace Passenger.Infrastructure.IoC.Modules
   public class SettingsModule : Module
   {
     private readonly IConfiguration _configuration;
-    private const string MongoDatabaseKey = "MongoDatabase";
 
     public SettingsModule(IConfiguration configuration)
     {
